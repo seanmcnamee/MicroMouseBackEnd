@@ -30,7 +30,7 @@ class Node:
         else:
             self.east_node = new_node
 
-    def visit(self):``
+    def visit(self):
         self.visited = True
 
     def equals(self, other_location):
