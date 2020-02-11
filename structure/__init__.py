@@ -1,1 +1,0 @@
-__doc__ = """This module lays out the theoretical in structure of the micromouse maze"""

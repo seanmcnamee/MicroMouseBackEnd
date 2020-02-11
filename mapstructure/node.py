@@ -33,8 +33,23 @@ class Node:
     def visit(self):
         self.visited = True
 
+    def unvisit(self):
+        self.visited = False
+
     def equals(self, other_location):
         """Is this node's location equal to the given location?"""
         x_equal = other_location[self.xval] == self.location[self.xval]
         y_equal = other_location[self.yval] == self.location[self.yval]
         return x_equal and y_equal
+
+    def get_adjacently_list(self):
+        adj_list = []
+        if not(self.north_node==None):
+            adj_list.append(self.north_node) 
+        if not(self.south_node==None):
+            adj_list.append(self.south_node)
+        if not(self.east_node==None):
+            adj_list.append(self.east_node)
+        if not(self.west_node==None):
+            adj_list.append(self.west_node) 
+        return adj_list
