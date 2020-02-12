@@ -15,11 +15,12 @@ class Node:
         """Find the distance between 2 nodes (not two directional)"""
         x_distance = other_node.location[self.xval]-self.location[self.xval]
         y_distance = other_node.location[self.yval]-self.location[self.yval]
+        print("Distance between " + str(self.location) + " and " + str(other_node.location) + " is " + str(x_distance) + ", " + str(y_distance))
         return (x_distance, y_distance)
 
     def set_adjacent_from_direction(self, direction, new_node):
         """Choose the proper adjacent node depending on direction"""
-        print("\t Setting connection from " + str(self.location) + " based on direction " + str(direction))
+        print("\t Setting connection from " + str(self.location) + " to " + str(new_node.location) + " based on direction " + str(direction))
         if direction[self.xval] == 0:
             if direction[self.yval] < 0:
                 self.north_node = new_node

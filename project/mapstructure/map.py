@@ -1,6 +1,6 @@
-import mapstructure.node as Node
-import mapstructure.robot_commands as RobotCommands
-import mapstructure.priority_queue as PQ
+import project.mapstructure.node as Node
+import project.robot_commands as RobotCommands
+import project.mapstructure.priority_queue as PQ
 
 
 class Map:
@@ -134,17 +134,17 @@ class Map:
             print("\tChecking " + str(previous_dist) + " to " + str(current_dist))
             if (previous_dist[x] == 0):
                 if previous_dist[y] == current_dist[x]:
-                    cmd_stack.append(RobotCommands.Commands.right)
+                    cmd_stack.append(RobotCommands.Directions.right)
                     print("\t\tx=0  Right")
                 else:
-                    cmd_stack.append(RobotCommands.Commands.left)
+                    cmd_stack.append(RobotCommands.Directions.left)
                     print("\t\tx=0 Left")
             else: #y=0
                 if previous_dist[x] == current_dist[y]:
-                    cmd_stack.append(RobotCommands.Commands.left)
+                    cmd_stack.append(RobotCommands.Directions.left)
                     print("\t\ty=0  Left")
                 else:
-                    cmd_stack.append(RobotCommands.Commands.right)
+                    cmd_stack.append(RobotCommands.Directions.right)
                     print("\t\ty=0  Right")
 
 
