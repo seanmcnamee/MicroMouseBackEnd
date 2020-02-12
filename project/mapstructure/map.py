@@ -8,7 +8,9 @@ class Map:
 
     def __init__(self):
         start_location = (0, 0)
+        self.default_facing = (0, 1)
         self.start = Node.Node(start_location)
+        self.current_node = None
         self.node_set = {self.start} #Exists to make sure duplicate nodes aren't created
         self.visit(start_location)
         self.finish = None
@@ -43,6 +45,9 @@ class Map:
     def visit(self, location):
         for node in self.node_set:
             if node.equals(location):
+                self.current_direction = self.default_facing #Hold a record of the current way you are facing
+                if not(self.current_node==None):
+                    self.current_direction = self.current_node.distance_between(node)
                 self.current_node = node
                 node.visit()
                 print("visited " + str(node.location))
@@ -77,8 +82,21 @@ class Map:
         new_length = 0
         new_length += node_keys[current_node][self.priority_index] + self.straight_weight
 
+        #previous_node = Node.Node((self.start.location[0]-self.default_facing[0], self.start.location[1]-self.default_facing[1])) #Default facing direction node
+        current_direction = self.default_facing
+        if (not(current_node==self.start)):
+            previous_node = node_keys[current_node][self.node_index]
+            current_direction = current_node.distance_between(previous_node)
+    
+        next_direction = next_node.distance_between(current_node)
+        if not(current_direction[0] == next_direction[0]) or not(current_direction[1] == next_direction[1]):
+            new_length += self.turn_weight
+
+        return new_length
+
+        """#TODO TODO TODO TODO THIS LOOKS FUCKING  W R O N G
         previous_node = Node.Node((self.start.location[0], self.start.location[1]-1)) #This shows that you always start by facing "North"
-        if not(previous_node==None):
+        if not(previous_node==None): #TODO this looks like it should say if not(node_keys[current_node][self.node_index]==None)
             previous_node = node_keys[current_node][self.node_index]
         
         current_dist = (0, 1)#current_node.distance_between(previous_node)
@@ -87,6 +105,7 @@ class Map:
             new_length += self.turn_weight
 
         return new_length
+        """
 
     """Dictionary is in the form {node, (previousNode, totalPathSize)}"""
     def convert_to_commands(self, dictionary):
