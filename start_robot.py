@@ -24,53 +24,82 @@ class RobotMazeLink():
         print("Current location: " + str(current_location))
 
         if (adjacency_tuple[0] == True): #Left
-            leftCoord = self.getLeftDirection(current_location, current_direction)
+            leftCoord = self.getLeftDirectionCoord(current_location, current_direction)
         if (adjacency_tuple[1] == True): #Forward
-            forwardCoord = self.getForwardDirection(current_location, current_direction)
+            forwardCoord = self.getForwardDirectionCoord(current_location, current_direction)
         if (adjacency_tuple[2] == True): #Right
-            rightCoord = self.getRightDirection(current_location, current_direction)
-        print("Adjacent Locations: " + str((leftCoord, forwardCoord, rightCoord)))
+            rightCoord = self.getRightDirectionCoord(current_location, current_direction)
+        print("\tAdjacent Locations: " + str((leftCoord, forwardCoord, rightCoord)))
         return (leftCoord, forwardCoord, rightCoord)
 
     def getCoordFromCommand(self, command):
+        current_direction = self.maze.current_direction#TODO SEE WHY HE IS NONE
+        current_location = self.maze.current_node.location
+        print("Forward and Location: " + str(current_direction) + " - " + str(current_location))
+        if command==RobotCommands.Directions.forwards:
+            return self.getForwardDirectionCoord(current_location, current_direction)
+        if command==RobotCommands.Directions.left:
+            return self.getLeftDirectionCoord(current_location, current_direction)
+        if command==RobotCommands.Directions.right:
+            return self.getRightDirectionCoord(current_location, current_direction)
+
+    def getCommandFromCoord(self, coord):
         current_direction = self.maze.current_direction
         current_location = self.maze.current_node.location
-        if command==RobotCommands.Directions.forwards:
-            return self.getForwardDirection(current_location, current_direction)
+        if coord == self.getForwardDirectionCoord(current_location, current_direction):
+            return RobotCommands.Directions.forwards
+        if coord==self.getLeftDirectionCoord(current_location, current_direction):
+            return RobotCommands.Directions.left
+        if coord==self.getRightDirectionCoord(current_location, current_direction):
+            return RobotCommands.Directions.right
+
+    def getNewFacingDirection(self, command):
+        current_direction = self.maze.current_direction
+        if command==RobotCommands.Directions.turnAround:
+            return self.getReverseDirection(current_direction)
         if command==RobotCommands.Directions.left:
-            return self.getLeftDirection(current_location, current_direction)
+            return self.getLeftDirection(current_direction)
         if command==RobotCommands.Directions.right:
-            return self.getRightDirection(current_location, current_direction)
+            return self.getRightDirection(current_direction)
+        if command==RobotCommands.Directions.forwards:
+            return current_direction
+        raise Exception("Can't find new facing direction for" + str(command))
 
-
-    def getLeftDirection(self, current_location, current_direction):
-        new_direction = (-current_direction[1], current_direction[0])
-        print("LEFT direction: " + str(new_direction))
+    def getLeftDirectionCoord(self, current_location, current_direction):
+        new_direction = self.getLeftDirection(current_direction)
+        print("\tLEFT direction: " + str(new_direction))
         leftCoord = (current_location[0]+new_direction[0], current_location[1]+new_direction[1])
         return leftCoord
 
-    def getForwardDirection(self, current_location, current_direction):
-        print("forward direction: " + str(current_direction))
+    def getLeftDirection(self, current_direction):
+        return (-current_direction[1], current_direction[0])
+
+    def getForwardDirectionCoord(self, current_location, current_direction):
+        print("\tFORWARD direction: " + str(current_direction))
         forwardCoord = (current_location[0]+current_direction[0], current_location[1]+current_direction[1])
         return forwardCoord
 
-    def getRightDirection(self, current_location, current_direction):
-        new_direction = (current_direction[1], -current_direction[0])
-        print("RIGHT direction: " + str(new_direction))
+    def getRightDirectionCoord(self, current_location, current_direction):
+        new_direction = self.getRightDirection(current_direction)
+        print("\tRIGHT direction: " + str(new_direction))
         rightCoord = (current_location[0]+new_direction[0], current_location[1]+new_direction[1])
         return rightCoord
 
+    def getRightDirection(self, current_direction):
+        return (current_direction[1], -current_direction[0])
+
+    def getReverseDirection(self, current_direction):
+        return (-current_direction[0], -current_direction[1])
+        
+
     def visitOneOfAdjacents(self, coordList):
-        adjacency_list = self.maze.current_node.get_adjacently_list()
+        adjacency_list = self.maze.current_node.get_adjacently_list(False)
         for node in adjacency_list:
-            if not(node.visited):
-                self.visit(node, coordList)
-                return True
+            self.visitAndUpdateReverseStack(node, coordList)
+            return True
         return False
 
-    def visit(self, node, coordList):
-        self.maze.visit(node.location)
-
+    def visitAndUpdateReverseStack(self, node, coordList):
         commands = [RobotCommands.Directions.forwards]
         if node.location==coordList[0]:
             commands.append(RobotCommands.Directions.left)
@@ -79,59 +108,80 @@ class RobotMazeLink():
 
         commandsToBacktrack = self.robot.convertFromInstructionsToMovementAndReturnReverse(commands)
 
+        self.maze.visit(node.location)
+
         for command in commandsToBacktrack:
             self.commandStack.append(command)
 
+
+    def explore(self):
+        should_continue = True
+
+        while should_continue:
+            self.exploreUntilDeadEnd()
+            should_continue = self.backtrackOntoIntersection()
+
+        print("End location: " + str(self.maze.current_node.location))
+
+
+
     def exploreUntilDeadEnd(self):
+        print("--Exploring Untiul Dead End--")
         nodeVisited = True
         while nodeVisited:
             adjacents = self.addAndReturnOpenAdjacents()
-            for coord in adjacents:
-                print("\t"+str(coord))
             nodeVisited = self.visitOneOfAdjacents(adjacents)
         
     
     def backtrackOntoIntersection(self):
-        adjacentNodes = []
-        while len(adjacentNodes) <= 0 and len(self.commandStack) > 0:
+        print("--Backtracking Until Intersection--")
+        self.robot.moveFromCommand(RobotCommands.Directions.turnAround)
+        self.maze.current_direction = self.getNewFacingDirection(RobotCommands.Directions.turnAround)
+        print("New facing direction after spin: " + str(self.maze.current_direction))
+        #self.commandStack.append(RobotCommands.Directions.turnAround)
+        unvisitedAdjacentNodes = []
+        while len(unvisitedAdjacentNodes) <= 0 and len(self.commandStack) > 0:
+            print("Currently at " + str(self.maze.current_node.location))
             topCommand = self.commandStack.pop()
-            next_coord = self.getCoordFromCommand(topCommand)
-            maze.visit(next_coord)
-            adjacentNodes = maze.current_node.get_adjacently_list()
+            self.robot.moveFromCommand(topCommand)
+            print("Robot just did: " + str(topCommand))
+            self.maze.current_direction = self.getNewFacingDirection(topCommand)
+            print("New facing direction: " + str(self.maze.current_direction))
+            if topCommand == RobotCommands.Directions.forwards:
+                next_coord = self.getCoordFromCommand(topCommand)
+                self.maze.visit(next_coord)
+                unvisitedAdjacentNodes = self.maze.current_node.get_adjacently_list(False)
+            print("Unvisited Adjacent Nodes:")
+            for node in unvisitedAdjacentNodes:
+                print("\t"+str(node.location))
         if len(self.commandStack) > 0:
-            continueOntoNextPath(adjacentNodes)
+            self.continueOntoNextPath(unvisitedAdjacentNodes)
             return True
         else:
             return False
     
-    def continueOntoNextPath(self, adjacentNodes):
-        most_recent_command = self.commandStack.pop()
-        adjacents = self.addAndReturnOpenAdjacents()
-        print("At intersection")
-        for coord in adjacents:
-            print("\t"+str(coord))
-                
-        adjacency_list = self.maze.current_node.get_adjacently_list()
-        for node in adjacency_list:
-            if not(node.visited):
-                self.visitAndEditCommandStack(node, adjacents, most_recent_command)
-                return True
-        return False
+    def continueOntoNextPath(self, unvisitedAdjacentNodes):
+        print("--Continuing onto next path--")
+        most_recent_command = self.commandStack.pop() #this is the command that we have to edit
 
-    def visitAndEditCommandStack(self, node, coordList, most_recent_command):
-        self.maze.visit(node.location)
-        
+        node_visiting = unvisitedAdjacentNodes.pop()
+        command_to_proceed = self.getCommandFromCoord(node_visiting.location) #Which direction should I go next?
+        new_stack_command = self.revStackCommandBasedOn(most_recent_command, command_to_proceed) #How will this affect my way back
 
-        commands = [RobotCommands.Directions.forwards]
-        if node.location==coordList[0]:
-            commands.append(RobotCommands.Directions.left)
-        elif node.location==coordList[2]:
-            commands.append(RobotCommands.Directions.right)
+        self.robot.moveFromCommand(command_to_proceed)
+        self.maze.visit(node_visiting.location)
+        self.commandStack.append(new_stack_command)
 
-        commandsToBacktrack = self.robot.convertFromInstructionsToMovementAndReturnReverse(commands)
+    def revStackCommandBasedOn(self, most_recent_command, command_to_proceed):
+        if (most_recent_command==RobotCommands.Directions.forwards):
+            return RobotCommands.Directions(-1*int(command_to_proceed))
+        else:
+            formula_solution = -int(most_recent_command)*((abs(int(most_recent_command))+1)%2)
+            return RobotCommands.Directions(formula_solution)
 
-        for command in commandsToBacktrack:
-            self.commandStack.append(command)
+    def getToMiddleAndBack(self):
+        self.commandStack = self.robot.convertFromInstructionsToMovementAndReturnReverse(self.maze.find_fastest_path())
+        self.robot.convertFromInstructionsToMovementAndReturnReverse(commandStack)
 
 
 
@@ -145,7 +195,7 @@ print("Let's Go!")
 link.explore()
 print("\t\t" + str(link.commandStack))
 
-
+link.getToMiddleAndBack()
 
 #cmd_stack = [Directions.forwards, Directions.left, Directions.forwards, Directions.left, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards]
 #cmd_stack = [Directions.forwards, Directions.right, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards]

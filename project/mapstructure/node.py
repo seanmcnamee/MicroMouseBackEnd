@@ -11,11 +11,11 @@ class Node:
         self.west_node = None
 
     #TODO make this take take in a tuple (location) so that the user doesn't have to worry about storing nodes?
-    def distance_between(self, other_node):
+    def distance_between(self, other_location):
         """Find the distance between 2 nodes (not two directional)"""
-        x_distance = other_node.location[self.xval]-self.location[self.xval]
-        y_distance = other_node.location[self.yval]-self.location[self.yval]
-        print("Distance between " + str(self.location) + " and " + str(other_node.location) + " is " + str(x_distance) + ", " + str(y_distance))
+        x_distance = other_location[self.xval]-self.location[self.xval]
+        y_distance = other_location[self.yval]-self.location[self.yval]
+        #print("Distance between " + str(self.location) + " and " + str(other_location) + " is " + str(x_distance) + ", " + str(y_distance))
         return (x_distance, y_distance)
 
     def set_adjacent_from_direction(self, direction, new_node):
@@ -43,14 +43,26 @@ class Node:
         y_equal = other_location[self.yval] == self.location[self.yval]
         return x_equal and y_equal
 
-    def get_adjacently_list(self):
+    def get_adjacently_list(self, onlyIncludeVisited):
+        print("\t"+str(onlyIncludeVisited))
         adj_list = []
         if not(self.north_node==None):
-            adj_list.append(self.north_node) 
+            print("\t\tNorth\t"+str(self.north_node.visited))
+            if onlyIncludeVisited==self.north_node.visited:
+                adj_list.append(self.north_node) 
         if not(self.south_node==None):
-            adj_list.append(self.south_node)
+            print("\t\tSouth\t"+str(self.south_node.visited))
+            if onlyIncludeVisited==self.south_node.visited:
+                adj_list.append(self.south_node)
         if not(self.east_node==None):
-            adj_list.append(self.east_node)
+            print("\t\tEast\t"+str(self.east_node.visited))
+            if onlyIncludeVisited==self.east_node.visited:
+                adj_list.append(self.east_node)
         if not(self.west_node==None):
-            adj_list.append(self.west_node) 
+            print("\t\tWest\t"+str(self.west_node.visited))
+            if onlyIncludeVisited==self.west_node.visited:
+                adj_list.append(self.west_node) 
+        print("\tAdjacency List")
+        for node in adj_list:
+            print("\t\t"+str(node.location))
         return adj_list

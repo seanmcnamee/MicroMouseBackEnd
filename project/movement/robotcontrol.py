@@ -1,3 +1,32 @@
+import project.robot_commands as RobotCommands
+
+class RobotControl():
+    def __init__(self):
+        self.dummy = 0
+
+    def convertFromInstructionsToMovementAndReturnReverse(self, cmd_stack):
+        reverse_stack = []
+        while len(cmd_stack) > 0:
+            command = cmd_stack.pop(-1)
+            print("\t"+str(command))
+            inv_command = RobotCommands.Directions(-1*int(command))
+            reverse_stack.append(inv_command)
+            self.moveFromCommand(command)
+        return reverse_stack
+
+    def moveFromCommand(self, command):
+        print("\t\t\t\t\t\t\t\t\t\t\t\tFollowing Command\t\t"+str(command))
+
+    def getAdjacencyReadings(self):
+        print("Looking at L-F-R sensors (1-0)")
+        left = input("\tLeft: ")=='1'
+        forward = input("\tForward: ")=='1'
+        right = input("\tRight: ")=='1'
+        print(str(left) + " - " + str(forward) + " - " + str(right))
+        return((left, forward, right))
+    
+
+"""
 import FA
 import project.robot_commands as RobotCommands
 
@@ -35,6 +64,8 @@ class RobotControl():
             self.robot.Right(self.right_angle_turn)
         elif command == RobotCommands.Directions.left:
             self.robot.Left(self.right_angle_turn)
+        elif command == RobotCommands.Directions.turnAround:
+            self.robot.Right(2*self.right_angle_turn)
 
     def adjustStraight(self):
         left_side = self.robot.ReadIR(1)
@@ -49,9 +80,12 @@ class RobotControl():
         print("Readings LR: " + str(left_side) + " - " + str(right_side))
 
     def getAdjacencyReadings(self):
-        """returns a 3-dim boolean tuple in the form of (LEFT, FORWARD, RIGHT) where each represents an open path"""
+        #returns a 3-dim boolean tuple in the form of (LEFT, FORWARD, RIGHT) where each represents an open path
         front = self.robot.ReadIR(2)
         left = self.robot.ReadIR(0)
         right = self.robot.ReadIR(4)
         print("\tReadings: " + str(left) + " - " + str(front) + " - " + str(right))
         return (left<=self.open_adjacency_max, front<=self.open_adjacency_max, right<=self.open_adjacency_max)
+
+
+"""

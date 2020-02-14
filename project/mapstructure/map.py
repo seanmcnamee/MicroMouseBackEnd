@@ -35,9 +35,9 @@ class Map:
 
     def set_both_connections(self, new_node):
         """Set the connections between the nodes"""
-        distance_to_new = self.current_node.distance_between(new_node)
+        distance_to_new = self.current_node.distance_between(new_node.location)
         self.current_node.set_adjacent_from_direction(distance_to_new, new_node)
-        reverse_distance = new_node.distance_between(self.current_node)#(-1*distance_to_new[0], -1*distance_to_new[1]) #TODO make sure new code works
+        reverse_distance = new_node.distance_between(self.current_node.location)#(-1*distance_to_new[0], -1*distance_to_new[1]) #TODO make sure new code works
         new_node.set_adjacent_from_direction(reverse_distance, self.current_node)
 
 
@@ -47,10 +47,10 @@ class Map:
             if node.equals(location):
                 self.current_direction = self.default_facing #Hold a record of the current way you are facing
                 if not(self.current_node==None):
-                    self.current_direction = self.current_node.distance_between(node)
-                self.current_node = node
+                    self.current_direction = self.current_node.distance_between(node.location)
+                self.current_node = node #And save the current node you are at
                 node.visit()
-                print("visited " + str(node.location))
+                print("\t\t\t\t\t\t\t\t\t\t\tvisited " + str(node.location))
                 return True
         raise Exception("Can't visit a node that doesn't exist (" + str(location) + ")")
 
@@ -126,7 +126,6 @@ class Map:
 
         return cmd_stack
 
-        
     def add_turn_if_needed(self, cmd_stack, current_dist, previous_dist):
         x = 0
         y = 1
