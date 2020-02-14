@@ -180,6 +180,7 @@ class RobotMazeLink():
             return RobotCommands.Directions(formula_solution)
 
     def getToMiddleAndBack(self):
+        #TODO add a way to figure out where the center is
         self.commandStack = self.robot.convertFromInstructionsToMovementAndReturnReverse(self.maze.find_fastest_path())
         self.robot.convertFromInstructionsToMovementAndReturnReverse(commandStack)
 
@@ -195,7 +196,7 @@ print("Let's Go!")
 link.explore()
 print("\t\t" + str(link.commandStack))
 
-link.getToMiddleAndBack()
+#link.getToMiddleAndBack()
 
 #cmd_stack = [Directions.forwards, Directions.left, Directions.forwards, Directions.left, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards]
 #cmd_stack = [Directions.forwards, Directions.right, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards]
