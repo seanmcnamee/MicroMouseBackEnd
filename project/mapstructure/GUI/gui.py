@@ -1,6 +1,7 @@
+import turtle
 import project.mapstructure.map as Map
 import project.mapstructure.node as Node
-import turtle
+
 
 class GUI:
 

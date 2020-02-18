@@ -185,6 +185,7 @@ class Map:
             node.unvisit()
 
     def choose_finish_node(self):
+        print("Looking for A finish node")
         for node in self.node_set:
             adjacency_list = node.get_adjacently_list(False)
             if len(adjacency_list) == 3:
@@ -196,8 +197,10 @@ class Map:
                 inters1 = adj0.intersection(adj1)
                 inters2 = adj0.intersection(adj2)
                 inters3 = adj1.intersection(adj2)
+                print(str(adj0) + "\n" + str(adj1) + "\n" + str(adj2))
 
                 adjUnion = inters1.union(inters2).union(inters3)
+                print("Union of intersections: " + str(adjUnion))
 
 
                 if len(adjUnion) >= 2:

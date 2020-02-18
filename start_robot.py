@@ -145,9 +145,10 @@ class RobotMazeLink():
     def get_to_middle_and_back(self):
         self.maze.reset_node_visits()
         self.maze.choose_finish_node()
+        self.robot.moveFromCommand(RobotCommands.Directions.turnAround)
         self.command_stack = self.robot.convertFromInstructionsToMovementAndReturnReverse(self.maze.find_fastest_path())
         self.robot.moveFromCommand(RobotCommands.Directions.turnAround)
-        self.robot.convertFromInstructionsToMovementAndReturnReverse(self.command_stack)
+        #self.robot.convertFromInstructionsToMovementAndReturnReverse(self.command_stack)
 
 
 
@@ -155,6 +156,7 @@ class RobotMazeLink():
 
 LINK = RobotMazeLink()
 
+#LINK.robot.adjustStraight()
 #TODO add an explore function for the robot
 
 
@@ -163,10 +165,12 @@ print("Let's Go!")
 LINK.explore()
 print("\t\t" + str(LINK.command_stack))
 
+
 LINK.get_to_middle_and_back()
 
-GUI = GUI.GUI(LINK.maze)
-GUI.display()
+
+#GUI = GUI.GUI(LINK.maze)
+#GUI.display()
 
 #cmd_stack = [Directions.forwards, Directions.left, Directions.forwards, Directions.left, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards]
 #cmd_stack = [Directions.forwards, Directions.right, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards, Directions.forwards]
