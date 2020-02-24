@@ -150,16 +150,29 @@ class RobotMazeLink():
         self.robot.moveFromCommand(RobotCommands.Directions.turnAround)
         #self.robot.convertFromInstructionsToMovementAndReturnReverse(self.command_stack)
 
-
-
+    def humanControl(self):
+        command = ""
+        while (command != "q"):
+            command = input("Command (w-a-s-d-r q): ")
+            if (command == "w"):
+                self.robot.moveFromCommand(RobotCommands.Directions.forwards)
+            elif (command == "a"):
+                self.robot.moveFromCommand(RobotCommands.Directions.left)
+            elif (command == "s"):
+                self.robot.moveFromCommand(RobotCommands.Directions.turnAround)
+            elif (command == "d"):
+                self.robot.moveFromCommand(RobotCommands.Directions.right)
+            elif (command == "r"):
+                self.robot.adjustStraight()
 
 
 LINK = RobotMazeLink()
 
 #LINK.robot.adjustStraight()
 #TODO add an explore function for the robot
+LINK.humanControl()
 
-
+"""
 print("Let's Go!")
 
 LINK.explore()
@@ -167,7 +180,7 @@ print("\t\t" + str(LINK.command_stack))
 
 
 LINK.get_to_middle_and_back()
-
+"""
 
 #GUI = GUI.GUI(LINK.maze)
 #GUI.display()

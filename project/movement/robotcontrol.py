@@ -34,8 +34,8 @@ class RobotControl():
 
     def __init__(self):
         self.full_power = 100
-        self.one_block_distance = 175 #180 for 83
-        self.right_angle_turn = 87
+        self.one_block_distance = 80 #180 for 83 #175 for 20
+        self.right_angle_turn = 90 #87 for 20 #90 for 83
         self.degree_adjustment = 4
         self.open_adjacency_max = 25
         self.needs_adjustment_min = 30
@@ -43,9 +43,13 @@ class RobotControl():
         self.tooFarFromWall = 200
         
         self.robot = FA.Create()
-        self.robot.ComOpen(15)  #83 is 16   #720 is 15
+        self.robot.ComOpen(16)  #83 is 16   #720 is 15
         self.robot.Forwards(30)
+        #self.robot.ServoMoveSpeed(50)
+        #self.robot.ServoSetPos(0)
+        #self.robot.ServoSetPos(50)
         #self.robot.SetMotors(self.full_power, self.full_power)
+        #self.robot.Forwards(self.one_block_distance*4)
 
     def convertFromInstructionsToMovementAndReturnReverse(self, cmd_stack):
         reverse_stack = []
@@ -62,7 +66,15 @@ class RobotControl():
     def moveFromCommand(self, command):
         self.adjustStraight()
         if command == RobotCommands.Directions.forwards:
-            self.robot.SetMotors(self.full_power, self.full_power)
+            
+            #adjReading = self.getAdjacencyReadings()
+            counter = 0
+            while (counter < self.one_block_distance):
+                self.robot.SetMotors(100, 96)
+                counter = counter + 1
+            self.robot.SetMotors(0, 0)
+
+            #self.robot.SetMotors(self.full_power, self.full_power)
             self.robot.Forwards(self.one_block_distance)
         elif command == RobotCommands.Directions.right:
             self.robot.Right(self.right_angle_turn)
