@@ -26,15 +26,21 @@ class RobotControl():
         print(str(left) + " - " + str(forward) + " - " + str(right))
         return((left, forward, right))
     """
+import pandas as pd
 
 import FA
 import project.robot_commands as RobotCommands
 
 class RobotControl():
+    port_file = 'project//movement//userports.csv'
+    straight_control_file = 'project//movement//straightcontrol-seanhouse.csv'
+    straight_control_columns = ['left', 'front-left', 'front', 'front-right', 'right', 'back-right', 'back', 'back-left', 'leftMotor', 'rightMotor']
 
-    def __init__(self):
+    def __init__(self, user='SeanPC', robot_name='FA-20'):
+        self.straight_control_data = []
+
         self.full_power = 100
-        self.one_block_distance = 80 #180 for 83 #175 for 20
+        self.one_block_distance = 30 #180 for 83 #175 for 20
         self.right_angle_turn = 90 #87 for 20 #90 for 83
         self.degree_adjustment = 4
         self.open_adjacency_max = 25
@@ -42,8 +48,11 @@ class RobotControl():
         self.straight_enough_margin = 100
         self.tooFarFromWall = 200
         
+        user_ports = pd.read_csv(RobotControl.port_file)
+        port = user_ports.loc[user, robot_name]
+
         self.robot = FA.Create()
-        self.robot.ComOpen(16)  #83 is 16   #720 is 15
+        self.robot.ComOpen(port)  #83 is 16   #720 is 15
         self.robot.Forwards(30)
         #self.robot.ServoMoveSpeed(50)
         #self.robot.ServoSetPos(0)
@@ -70,12 +79,13 @@ class RobotControl():
             #adjReading = self.getAdjacencyReadings()
             counter = 0
             while (counter < self.one_block_distance):
-                self.robot.SetMotors(100, 96)
+                self.robot.SetMotors(50, 50) #100, 96
+                self.update_data_list(50, 50)
                 counter = counter + 1
             self.robot.SetMotors(0, 0)
 
             #self.robot.SetMotors(self.full_power, self.full_power)
-            self.robot.Forwards(self.one_block_distance)
+            #self.robot.Forwards(self.one_block_distance)
         elif command == RobotCommands.Directions.right:
             self.robot.Right(self.right_angle_turn)
         elif command == RobotCommands.Directions.left:
@@ -138,6 +148,20 @@ class RobotControl():
         left = self.robot.ReadIR(0)
         right = self.robot.ReadIR(4)
         print("\tReadings: " + str(left) + " - " + str(front) + " - " + str(right))
-        return (left<=self.open_adjacency_max, front<=self.open_adjacency_max, right<=self.open_adjacency_max)
+        return (left <= self.open_adjacency_max, front <= self.open_adjacency_max, right <= self.open_adjacency_max)
 
 
+    def update_data_list(self, leftSpeed, rightSpeed):
+        d0 = self.robot.ReadIR(0)
+        d1 = self.robot.ReadIR(1)
+        d2 = self.robot.ReadIR(2)
+        d3 = self.robot.ReadIR(3)
+        d4 = self.robot.ReadIR(4)
+        d5 = self.robot.ReadIR(5)
+        d6 = self.robot.ReadIR(6)
+        d7 = self.robot.ReadIR(7)
+        self.straight_control_data.append((d0, d1, d2, d3, d4, d5, d6, d7, leftSpeed, rightSpeed))
+        
+    def saveToCSV(self):
+        df = pd.DataFrame.from_records(self.straight_control_data, columns=RobotControl.straight_control_columns)
+        df.to_csv(RobotControl.straight_control_file)

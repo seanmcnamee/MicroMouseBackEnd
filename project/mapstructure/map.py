@@ -47,7 +47,7 @@ class Map:
         for node in self.node_set:
             if node.equals(location):
                 self.current_direction = self.default_facing #Hold a record of the current way you are facing
-                if not(self.current_node==None):
+                if not self.current_node is None:
                     self.current_direction = self.current_node.distance_between(node.location)
                 self.current_node = node #And save the current node you are at
                 node.visit()
@@ -60,23 +60,22 @@ class Map:
         node_keys = {self.start: (None, 0)}
         for node in self.node_set:
             node.unvisit() #Unvisit every node
-            if not(node==self.start):
+            if not node == self.start:
                 node_keys[node] = (None, float("inf"))
 
         #Create Priority Queue of nodes based on the dictionary data
         priority_nodes = PQ.PriorityQueue(node_keys)
 
-        while not(self.finish.visited):
+        while not self.finish.visited:
             current_node = priority_nodes.pop()[self.node_index]
             for node in current_node.get_adjacently_list(False):
                 new_length = self.calc_new_distance(node_keys, current_node, node)
-                if (new_length < node_keys[node][self.priority_index]):
+                if new_length < node_keys[node][self.priority_index]:
                     node_keys[node] = (current_node, new_length)
                     priority_nodes.update((node, new_length))
             current_node.visit()
-        
         return self.convert_to_commands(node_keys)
-                
+
     def calc_new_distance(self, node_keys, current_node, next_node):
         new_length = 0
         new_length += node_keys[current_node][self.priority_index] + self.straight_weight

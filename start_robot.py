@@ -4,8 +4,8 @@ import project.mapstructure.map as Map
 import project.mapstructure.GUI.gui as GUI
 
 class RobotMazeLink():
-    def __init__(self):
-        self.robot = RobotControl.RobotControl()
+    def __init__(self, user='SeanPC', robot_name='FA-20'):
+        self.robot = RobotControl.RobotControl(user, robot_name)
         self.maze = Map.Map()
         self.command_stack = []
 
@@ -22,14 +22,14 @@ class RobotMazeLink():
         right_coord = None
         forward_coord = None
 
-        if (adjacency_tuple[0]): #Left
+        if adjacency_tuple[0]: #Left
             left_coord = self.maze.get_left_direction_coord()
-        if (adjacency_tuple[1]): #Forward
+        if adjacency_tuple[1]: #Forward
             forward_coord = self.maze.get_forward_direction_coord()
-        if (adjacency_tuple[2]): #Right
+        if adjacency_tuple[2]: #Right
             right_coord = self.maze.get_right_direction_coord()
         print("\tAdjacent Locations: " + str((left_coord, forward_coord, right_coord)))
-        return (left_coord, forward_coord, right_coord)        
+        return (left_coord, forward_coord, right_coord)
 
     def visit_one_of_adjacents(self, coordList):
         adjacency_list = self.maze.current_node.get_adjacently_list(False)
@@ -166,12 +166,13 @@ class RobotMazeLink():
                 self.robot.adjustStraight()
 
 
-LINK = RobotMazeLink()
+LINK = RobotMazeLink(user='SeanPC', robot_name='FA-20')
 
 #LINK.robot.adjustStraight()
 #TODO add an explore function for the robot
 LINK.humanControl()
 
+LINK.robot.saveToCSV()
 """
 print("Let's Go!")
 
