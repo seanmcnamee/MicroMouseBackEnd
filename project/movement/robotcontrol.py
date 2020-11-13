@@ -33,7 +33,7 @@ import project.robot_commands as RobotCommands
 
 class RobotControl():
     port_file = 'project//movement//userports.csv'
-    straight_control_file = 'project//movement//straightcontrol-seanhouse.csv'
+    straight_control_file = 'project//movement//ML//straightcontrol-seanhouse.csv'
     straight_control_columns = ['left', 'front-left', 'front', 'front-right', 'right', 'back-right', 'back', 'back-left', 'leftMotor', 'rightMotor']
 
     def __init__(self, user='SeanPC', robot_name='FA-20'):

@@ -1,0 +1,7 @@
+left,front-left,front,front-right,right,back-right,back,back-left,leftMotor,rightMotor
+Lstart,1,1,1,1,1,1,1,1,1,1
+Lprevious,1,1,1,1,1,1,1,1,1,1
+Lcurrent,1,1,1,1,1,1,1,1,1,1
+Rstart,1,1,1,1,1,1,1,1,1,1
+Rprevious,1,1,1,1,1,1,1,1,1,1
+Rcurrent,1,1,1,1,1,1,1,1,1,1
