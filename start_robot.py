@@ -166,7 +166,7 @@ class RobotMazeLink():
                 self.robot.adjustStraight()
 
 
-LINK = RobotMazeLink(user='SeanPC', robot_name='FA-20')
+LINK = RobotMazeLink(user='SeanLaptop', robot_name='FA-20')
 
 #LINK.robot.adjustStraight()
 #TODO add an explore function for the robot

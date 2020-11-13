@@ -40,7 +40,7 @@ class RobotControl():
         self.straight_control_data = []
 
         self.full_power = 100
-        self.one_block_distance = 30 #180 for 83 #175 for 20
+        self.one_block_distance = 10 #180 for 83 #175 for 20
         self.right_angle_turn = 90 #87 for 20 #90 for 83
         self.degree_adjustment = 4
         self.open_adjacency_max = 25
@@ -73,7 +73,7 @@ class RobotControl():
         return reverse_stack
 
     def moveFromCommand(self, command):
-        self.adjustStraight()
+        #self.adjustStraight()
         if command == RobotCommands.Directions.forwards:
             
             #adjReading = self.getAdjacencyReadings()
@@ -164,4 +164,4 @@ class RobotControl():
         
     def saveToCSV(self):
         df = pd.DataFrame.from_records(self.straight_control_data, columns=RobotControl.straight_control_columns)
-        df.to_csv(RobotControl.straight_control_file)
+        df.to_csv(RobotControl.straight_control_file, mode='a')
