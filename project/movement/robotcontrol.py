@@ -9,8 +9,8 @@ class RobotControl():
     
     def __init__(self, file=fm.FileManager()):
         self.file = file
-        self.robot = FA.Create()
-        self.robot.ComOpen(file.port)
+        self.robot = None #FA.Create()
+        #self.robot.ComOpen(file.port)
 
     def set_motors(self, left_percent, right_percent):
         """Sets the motor speeds based on percentages of each motor's top speed

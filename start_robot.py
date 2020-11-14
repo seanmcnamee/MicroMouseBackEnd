@@ -1,5 +1,5 @@
 import project.movement.robotcontrol as RobotControl
-import project.fileio.filemanager as file
+import project.fileio.filemanager as fm
 
 class MainClass():
     def __init__(self, port):
@@ -11,8 +11,8 @@ class MainClass():
         while should_continue:
             print("test")
 
-
-control = MainClass(file.get_user_port())
+file = fm.FileManager()
+control = MainClass(file)
 
 
 print("complete")

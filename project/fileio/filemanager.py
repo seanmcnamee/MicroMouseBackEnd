@@ -27,7 +27,7 @@ class FileManager:
         self.port = user_ports.loc[user, robot_name]
         self.list_tuple_file = STRAIGHT_CONTROL_FILE_FRAME + str(user_ports.loc[user, DATA_FILE_HEADER])
 
-    def saveToCSV(self, tuple_list):
+    def save_raw_data(self, tuple_list):
         """Append the list of 9 tuples used in this run to the CSV file
 
         Args:
