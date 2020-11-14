@@ -40,13 +40,13 @@ class FileManager:
 def store_weights(layers):
     #Get current records
     perceptron_weights = []
-    for i in range(len(perceptrons)):
-        perceptron_weights.append(perceptrons[i].weights)
-    current_weights = pd.DataFrame.from_records(perceptron_weights, columns=LearnStraight.weights_columns)
+    for i in range(len(layers)):
+        perceptron_weights.append(layers[i])
+    current_weights = pd.DataFrame.from_records(perceptron_weights)
 
     
     previous_weights = retrieve_weights()
     previous_weights.update(current_weights)
 
 def retrieve_weights():
-    return pd.read_csv(LearnStraight.weights_file)
+    return pd.read_csv(NEURAL_NETWORK_DATA)
