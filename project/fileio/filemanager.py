@@ -15,7 +15,6 @@ class FileManager:
     def __init__(self, user='SeanPC', robot_name='FA-20'):
         self.set_user_port_and_files(user, robot_name)
 
-
     def set_user_port_and_files(self, user='SeanPC', robot_name='FA-20'):
         """Get the bluetooth port and datafile for the given user and robot
 
@@ -27,7 +26,15 @@ class FileManager:
         self.port = user_ports.loc[user, robot_name]
         self.list_tuple_file = STRAIGHT_CONTROL_FILE_FRAME + str(user_ports.loc[user, DATA_FILE_HEADER])
 
-    def save_raw_data(self, tuple_list):
+    def get_raw_data(self):
+        """Get a dataframe with all the data in the csv datafile
+
+        Returns:
+            Pandas DataFrame: can be accessed/manipulated/stored back quickly
+        """
+        return pd.read_csv(self.list_tuple_file)
+
+    def store_raw_data(self, tuple_list):
         """Append the list of 9 tuples used in this run to the CSV file
 
         Args:
@@ -36,7 +43,6 @@ class FileManager:
         data = pd.DataFrame.from_records(tuple_list, columns=STRAIGHT_CONTROL_STRUCT)
         data.to_csv(self.list_tuple_file, mode='a')
     
-
 def store_weights(layers):
     #Get current records
     perceptron_weights = []
@@ -47,6 +53,14 @@ def store_weights(layers):
     
     previous_weights = retrieve_weights()
     previous_weights.update(current_weights)
+
+def store_raw_data(data_frame):
+    """Append the list of 9 tuples used in this run to the CSV file
+
+    Args:
+        data_frame: follows structure of STRAIGHT_CONTROL_STRUCT
+    """
+    data_frame.to_csv(NEURAL_NETWORK_DATA)
 
 def retrieve_weights():
     return pd.read_csv(NEURAL_NETWORK_DATA)
