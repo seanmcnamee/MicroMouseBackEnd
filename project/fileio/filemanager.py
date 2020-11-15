@@ -44,37 +44,52 @@ class FileManager:
         data = pd.DataFrame.from_records(tuple_list, columns=STRAIGHT_CONTROL_STRUCT)
         data.to_csv(self.list_tuple_file, mode='a')
     
-def store_weights_and_biases(layersetweights, layersetbiases, sizingTuple):
+def store_weights_and_biases(layersetweights, layersetbiases):
     """Replace the entire neural network data file with these weights and biases
 
     Args:
         layersetweights (list of matrices of weights): from all layers
         layersetbiases (list of matrices of biases): from all layers
     """
-    weightsmatrix = np.concatenate(layersetweights, axis=1)
-    bias_matrix = np.concatenate(layersetbiases, axis=1)
-    weights_bias_matrix = np.concatenate((weightsmatrix, bias_matrix), 0)
-
-    data_frame = pd.DataFrame.from_records(weights_bias_matrix.transpose())
-    print("Data Frame: ", data_frame)
-    store_raw_data(data_frame)
+    #weightsmatrix = np.concatenate(layersetweights, axis=1)
+    #bias_matrix = np.concatenate(layersetbiases, axis=1)
+    #weights_bias_matrix = np.concatenate((weightsmatrix, bias_matrix), 0)
+    
+    for i in range(0, len(layersetweights)):
+        weights_bias_matrix = np.concatenate((layersetweights[i], layersetbiases[i]), 0)
+        data_frame = pd.DataFrame.from_records(weights_bias_matrix.transpose())
+        print("Data Frame", i, ": ", data_frame)
+        store_raw_data(data_frame, first=i==0)
     #TODO make it so that VARYING size weights+biases get added incrementally to the file
     
-def store_raw_data(data_frame):
+def store_raw_data(data_frame, first=False):
     """Replace the neural network data file with this dataframe
 
     Args:
         matrix: set of NN weights and biases from each layer
     """
-    data_frame.to_csv(NEURAL_NETWORK_DATA)
+    data_frame.to_csv(NEURAL_NETWORK_DATA, mode='w' if first else 'a')
 
-def retrieve_weights():
+def retrieve_weights(sizingTuple):
     """Get the NN weights and biases stored
 
     Returns:
         tuple of (weights, biases): entire networks' weights and biases
     """
+
+    '''
     full_matrix = np.delete(pd.read_csv(NEURAL_NETWORK_DATA).to_numpy(), 0, axis=1)
     num_of_weights = full_matrix.shape[1]-1
-    weights_biases = np.hsplit(full_matrix, np.array([num_of_weights, num_of_weights+1]))
-    return (weights_biases[0], weights_biases[1])
+    weights_biases = np.hsplit(full_matrix, np.array([num_of_weights, num_of_weights+1]))'''
+    full_nparr = np.delete(pd.read_csv(NEURAL_NETWORK_DATA).to_numpy(), 0, axis=1)
+    weights = []
+    biases = []
+    rowStart = 0
+    for i in range(len(sizingTuple)):
+        single_layer = full_nparr[rowStart:rowStart+sizingTuple[i][1]]
+        single_layer = np.hsplit(single_layer, np.array([sizingTuple[i][0], sizingTuple[i][0]+1]))
+        weights.append(single_layer[0])
+        biases.append(single_layer[1])
+        rowStart += sizingTuple[i][1] + 1
+    return (weights, biases)
+    #return (weights_biases[0], weights_biases[1])

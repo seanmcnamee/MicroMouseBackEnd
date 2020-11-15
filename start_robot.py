@@ -13,12 +13,15 @@ class MainClass():
         while should_continue:
             print("test")
 
+sizingTuples = [(5, 3), (3, 2)]
+print(len(sizingTuples))
+
 def storeRandWeights():
-    layer = NN.Layer_Dense(n_inputs=5, n_neurons=3)
+    layer = NN.Layer_Dense(n_inputs=sizingTuples[0][0], n_neurons=sizingTuples[0][1])
     print("Printing NN")
     print(layer.weights.transpose())
 
-    layer2 = NN.Layer_Dense(n_inputs=3, n_neurons=2)
+    layer2 = NN.Layer_Dense(n_inputs=sizingTuples[1][0], n_neurons=sizingTuples[1][1])
     print("Printing NN")
     print(layer2.weights.transpose())
 
@@ -28,17 +31,17 @@ def storeRandWeights():
     fm.store_weights_and_biases(arrboth, biasboth)
 
 def getWeights():
-    arr = fm.retrieve_weights()
-    print("weights: ", arr[0])
-    print("bias: ", arr[1])
+    arr = fm.retrieve_weights(sizingTuples)
+    print("weights: ", arr[0][1])
+    print("bias: ", arr[1][1])
 
 
 #file = fm.FileManager()
 #control = MainClass(file)
 
 
-storeRandWeights()
-#getWeights()
+#storeRandWeights()
+getWeights()
 
 
 
