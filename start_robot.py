@@ -1,5 +1,7 @@
 import project.movement.robotcontrol as RobotControl
 import project.fileio.filemanager as fm
+import project.movement.ML.neuralnetwork as NN
+import numpy as np
 
 class MainClass():
     def __init__(self, port):
@@ -11,17 +13,32 @@ class MainClass():
         while should_continue:
             print("test")
 
-file = fm.FileManager()
+def storeRandWeights():
+    layer = NN.Layer_Dense(5, 2)
+    print("Printing NN")
+    print(layer.weights.transpose())
+
+    layer2 = NN.Layer_Dense(5, 2)
+    print("Printing NN")
+    print(layer2.weights.transpose())
+
+    arrboth = [layer.weights, layer2.weights]
+    biasboth = [layer.biases, layer2.biases]
+
+    fm.store_weights_and_biases(arrboth, biasboth)
+
+def getWeights():
+    arr = fm.retrieve_weights()
+    print("Data frame: ", arr)
+
+
+#file = fm.FileManager()
 #control = MainClass(file)
-print(file.get_raw_data())
 
-import numpy as np
-a1 = [1, 2, 3, 4]
-a2 = [5, 6, 7, 8]
-a3 = [9, 1, 2, 3]
 
-a = np.array([a1, a2, a3])
-print(a)
+#storeRandWeights()
+getWeights()
+
 
 
 print("complete")

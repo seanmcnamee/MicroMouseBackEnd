@@ -1,8 +1,9 @@
 import pandas as pd
+import numpy as np
 
 PORT_FILE = 'project//movement//userports.csv'
 STRAIGHT_CONTROL_FILE_FRAME = 'project//movement//ML//straightdata//'
-NEURAL_NETWORK_DATA = 'project//movement//ML//straightdata//weightsandbiasfile.csv'
+NEURAL_NETWORK_DATA = 'project//movement//ML//neuralnetworkdata//weightsandbias.csv'
 STRAIGHT_CONTROL_STRUCT = ['left', 'front-left', 'front', 'front-right', 'right', 'back-right', \
                             'back', 'back-left', 'leftMotor', 'rightMotor']
 DATA_FILE_HEADER = "rawdatafile"
@@ -43,24 +44,33 @@ class FileManager:
         data = pd.DataFrame.from_records(tuple_list, columns=STRAIGHT_CONTROL_STRUCT)
         data.to_csv(self.list_tuple_file, mode='a')
     
-def store_weights(layers):
-    #Get current records
-    perceptron_weights = []
-    for i in range(len(layers)):
-        perceptron_weights.append(layers[i])
-    current_weights = pd.DataFrame.from_records(perceptron_weights)
-
-    
-    previous_weights = retrieve_weights()
-    previous_weights.update(current_weights)
-
-def store_raw_data(data_frame):
-    """Append the list of 9 tuples used in this run to the CSV file
+def store_weights_and_biases(layersetweights, layersetbiases):
+    """Replace the entire neural network data file with these weights and biases
 
     Args:
-        data_frame: follows structure of STRAIGHT_CONTROL_STRUCT
+        layersetweights (list of matrices of weights): from all layers
+        layersetbiases (list of matrices of biases): from all layers
+    """
+    weightsmatrix = np.concatenate(layersetweights, axis=1)
+    bias_matrix = np.concatenate(layersetbiases, axis=1)
+    weights_bias_matrix = np.concatenate((weightsmatrix, bias_matrix), 0)
+
+    data_frame = pd.DataFrame.from_records(weights_bias_matrix.transpose())
+    print("Data Frame: ", data_frame)
+    store_raw_data(data_frame)
+    
+def store_raw_data(data_frame):
+    """Replace the neural network data file with this dataframe
+
+    Args:
+        matrix: set of NN weights and biases from each layer
     """
     data_frame.to_csv(NEURAL_NETWORK_DATA)
 
 def retrieve_weights():
-    return pd.read_csv(NEURAL_NETWORK_DATA)
+    """Get the NN weights and biases stored
+
+    Returns:
+        numpy matrix: each row is a set of weights with the last a bias
+    """
+    return np.delete(pd.read_csv(NEURAL_NETWORK_DATA).to_numpy(), 0, axis=1)
