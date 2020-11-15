@@ -14,7 +14,7 @@ class MainClass():
             print("test")
 
 sizingTuples = [(5, 3), (3, 2)]
-print(len(sizingTuples))
+#print(len(sizingTuples))
 
 def storeRandWeights():
     layer = NN.Layer_Dense(n_inputs=sizingTuples[0][0], n_neurons=sizingTuples[0][1])
@@ -41,8 +41,8 @@ def getWeights():
 
 
 #storeRandWeights()
-getWeights()
-
-
+#getWeights()
+network = NN.Network()
+network.store_layers()
 
 print("complete")

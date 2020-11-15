@@ -88,8 +88,8 @@ def retrieve_weights(sizingTuple):
     for i in range(len(sizingTuple)):
         single_layer = full_nparr[rowStart:rowStart+sizingTuple[i][1]]
         single_layer = np.hsplit(single_layer, np.array([sizingTuple[i][0], sizingTuple[i][0]+1]))
-        weights.append(single_layer[0])
-        biases.append(single_layer[1])
+        weights.append(single_layer[0].transpose())
+        biases.append(single_layer[1].transpose())
         rowStart += sizingTuple[i][1] + 1
     return (weights, biases)
     #return (weights_biases[0], weights_biases[1])

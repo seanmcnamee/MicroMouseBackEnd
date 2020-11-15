@@ -1,10 +1,13 @@
 """The entire neural network's functionality
 """
 import numpy as np
+import project.fileio.filemanager as fm
 
 
 
 class Network:
+    """Deals with each overall operation of each layer
+    """
 
     def __init__(self, shouldInitialize=False):
         self.layer_size = ((10, 5), (5, 5), (5, 2))
@@ -15,13 +18,27 @@ class Network:
             self.load_layers()
     
     def randomize_layers(self):
-        for i in range(self.layer_size):
-            print()
+        """initialize each layer with no data
+        """
+        for i in range(len(self.layer_size)):
+            self.layer.append(Layer_Dense(n_inputs=self.layer_size[i][0], n_neurons=self.layer_size[i][1]))
 
     def load_layers(self):
-        #TODO: convert the large matrix to tuples that can be passed into the Layer_Dense
-        for i in range(self.layer_size):
-            print()
+        """Initialize each layer with the stored data
+        """
+        weights, biases = fm.retrieve_weights(self.layer_size)
+        for i in range(len(weights)):
+            self.layer.append(Layer_Dense(weightbiastuple=(weights[i], biases[i])))
+
+    def store_layers(self):
+        """Store the data from this session back into memory
+        """
+        weights = []
+        biases = []
+        for i in range(len(self.layer)):
+            weights.append(self.layer[i].weights)
+            biases.append(self.layer[i].biases)
+        fm.store_weights_and_biases(weights, biases)
 
     
 
@@ -46,6 +63,8 @@ class Layer_Dense:
         else:
             self.weights = 0.01 * np.random.randn(n_inputs, n_neurons)
             self.biases = np.zeros((1, n_neurons))
+
+        print(self.weights)
 
     # Forward pass
     def forward(self, inputs):
