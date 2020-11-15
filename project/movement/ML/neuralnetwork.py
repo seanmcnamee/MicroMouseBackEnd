@@ -3,6 +3,29 @@
 import numpy as np
 
 
+
+class Network:
+
+    def __init__(self, shouldInitialize=False):
+        self.layer_size = ((10, 5), (5, 5), (5, 2))
+        self.layer = []
+        if (shouldInitialize):
+            self.randomize_layers()
+        else:
+            self.load_layers()
+    
+    def randomize_layers(self):
+        for i in range(self.layer_size):
+            print()
+
+    def load_layers(self):
+        #TODO: convert the large matrix to tuples that can be passed into the Layer_Dense
+        for i in range(self.layer_size):
+            print()
+
+    
+
+
 # Dense layer
 class Layer_Dense:
     """Deals with the neurons, bias, and forward pass through a layer.
