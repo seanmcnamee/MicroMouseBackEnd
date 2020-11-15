@@ -14,11 +14,11 @@ class MainClass():
             print("test")
 
 def storeRandWeights():
-    layer = NN.Layer_Dense(5, 2)
+    layer = NN.Layer_Dense(n_inputs=5, n_neurons=3)
     print("Printing NN")
     print(layer.weights.transpose())
 
-    layer2 = NN.Layer_Dense(5, 2)
+    layer2 = NN.Layer_Dense(n_inputs=3, n_neurons=2)
     print("Printing NN")
     print(layer2.weights.transpose())
 
@@ -29,15 +29,16 @@ def storeRandWeights():
 
 def getWeights():
     arr = fm.retrieve_weights()
-    print("Data frame: ", arr)
+    print("weights: ", arr[0])
+    print("bias: ", arr[1])
 
 
 #file = fm.FileManager()
 #control = MainClass(file)
 
 
-#storeRandWeights()
-getWeights()
+storeRandWeights()
+#getWeights()
 
 
 

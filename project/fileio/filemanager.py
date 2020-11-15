@@ -44,7 +44,7 @@ class FileManager:
         data = pd.DataFrame.from_records(tuple_list, columns=STRAIGHT_CONTROL_STRUCT)
         data.to_csv(self.list_tuple_file, mode='a')
     
-def store_weights_and_biases(layersetweights, layersetbiases):
+def store_weights_and_biases(layersetweights, layersetbiases, sizingTuple):
     """Replace the entire neural network data file with these weights and biases
 
     Args:
@@ -58,6 +58,7 @@ def store_weights_and_biases(layersetweights, layersetbiases):
     data_frame = pd.DataFrame.from_records(weights_bias_matrix.transpose())
     print("Data Frame: ", data_frame)
     store_raw_data(data_frame)
+    #TODO make it so that VARYING size weights+biases get added incrementally to the file
     
 def store_raw_data(data_frame):
     """Replace the neural network data file with this dataframe
@@ -71,6 +72,9 @@ def retrieve_weights():
     """Get the NN weights and biases stored
 
     Returns:
-        numpy matrix: each row is a set of weights with the last a bias
+        tuple of (weights, biases): entire networks' weights and biases
     """
-    return np.delete(pd.read_csv(NEURAL_NETWORK_DATA).to_numpy(), 0, axis=1)
+    full_matrix = np.delete(pd.read_csv(NEURAL_NETWORK_DATA).to_numpy(), 0, axis=1)
+    num_of_weights = full_matrix.shape[1]-1
+    weights_biases = np.hsplit(full_matrix, np.array([num_of_weights, num_of_weights+1]))
+    return (weights_biases[0], weights_biases[1])
