@@ -4,6 +4,7 @@ import numpy as np
 PORT_FILE = 'project//movement//userports.csv'
 STRAIGHT_CONTROL_FILE_FRAME = 'project//movement//ML//straightdata//'
 NEURAL_NETWORK_DATA = 'project//movement//ML//neuralnetworkdata//weightsandbias.csv'
+SENSOR_MAX_FILE = 'project//movement//ML//neuralnetworkdata//maxreadings.csv'
 STRAIGHT_CONTROL_STRUCT = ['left', 'front-left', 'front', 'front-right', 'right', 'back-right', \
                             'back', 'back-left', 'leftMotor', 'rightMotor']
 DATA_FILE_HEADER = "rawdatafile"
@@ -93,3 +94,14 @@ def retrieve_weights(sizingTuple):
         rowStart += sizingTuple[i][1] + 1
     return (weights, biases)
     #return (weights_biases[0], weights_biases[1])
+
+def retrieve_highest_sensors():
+    return tuple(pd.read_csv(SENSOR_MAX_FILE).to_numpy()[0][1:])
+
+def store_highest_data(tuple_list):
+    current_largest = retrieve_highest_sensors()
+    largest_tuple = (max(tuple_list[i], current_largest[i]) for i in range(len(tuple_list)))
+
+
+    data = pd.DataFrame.from_records([largest_tuple], columns=STRAIGHT_CONTROL_STRUCT[:-2])
+    data.to_csv(SENSOR_MAX_FILE, mode='w')

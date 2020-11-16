@@ -4,8 +4,8 @@ import project.movement.ML.neuralnetwork as NN
 import numpy as np
 
 class MainClass():
-    def __init__(self, port):
-        self.robot = RobotControl.RobotControl(port)
+    def __init__(self, file):
+        self.robot = RobotControl.RobotControl(file)
 
     def explore(self):
         should_continue = True
@@ -13,36 +13,23 @@ class MainClass():
         while should_continue:
             print("test")
 
-sizingTuples = [(5, 3), (3, 2)]
-#print(len(sizingTuples))
-
-def storeRandWeights():
-    layer = NN.Layer_Dense(n_inputs=sizingTuples[0][0], n_neurons=sizingTuples[0][1])
-    print("Printing NN")
-    print(layer.weights.transpose())
-
-    layer2 = NN.Layer_Dense(n_inputs=sizingTuples[1][0], n_neurons=sizingTuples[1][1])
-    print("Printing NN")
-    print(layer2.weights.transpose())
-
-    arrboth = [layer.weights, layer2.weights]
-    biasboth = [layer.biases, layer2.biases]
-
-    fm.store_weights_and_biases(arrboth, biasboth)
-
-def getWeights():
-    arr = fm.retrieve_weights(sizingTuples)
-    print("weights: ", arr[0][1])
-    print("bias: ", arr[1][1])
+def updateLargest():
+    file = fm.FileManager()
+    robot = RobotControl.RobotControl(file)
+    tuple_readings = robot.get_sensor_readings()
+    print(tuple_readings)
+    fm.store_highest_data(tuple_readings)
 
 
-#file = fm.FileManager()
-#control = MainClass(file)
+
+
+
+updateLargest()
 
 
 #storeRandWeights()
 #getWeights()
-network = NN.Network()
-network.store_layers()
+#network = NN.Network()
+#network.store_layers()
 
 print("complete")
