@@ -1,7 +1,7 @@
 import FA
 import project.fileio.filemanager as fm
 
-FULL_POWER = 100
+FULL_POWER = 80
 
 class RobotControl():
     """Deals with Robot movement and data fetching
