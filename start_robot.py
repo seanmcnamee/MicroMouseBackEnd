@@ -1,17 +1,10 @@
 import project.movement.robotcontrol as RobotControl
 import project.fileio.filemanager as fm
+import project.movement.ML.learnstraight as learn
 import project.movement.ML.neuralnetwork as NN
 import numpy as np
 
-class MainClass():
-    def __init__(self, file):
-        self.robot = RobotControl.RobotControl(file)
 
-    def explore(self):
-        should_continue = True
-
-        while should_continue:
-            print("test")
 
 def updateLargest():
     file = fm.FileManager()
@@ -20,11 +13,18 @@ def updateLargest():
     print(tuple_readings)
     fm.store_highest_data(tuple_readings)
 
+def testThrough():
+    runner = learn.LearnStraight()
+    print("About to run the robot")
+    runner.start()
 
 
 
 
-updateLargest()
+#updateLargest()
+testThrough()
+
+
 
 
 #storeRandWeights()

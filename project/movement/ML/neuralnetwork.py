@@ -9,13 +9,17 @@ class Network:
     """Deals with each overall operation of each layer
     """
 
-    def __init__(self, shouldInitialize=False):
-        self.layer_size = ((10, 5), (5, 5), (5, 2))
+    def __init__(self, layer_sizes, shouldInitialize=False):
+        self.layer_size = layer_sizes
         self.layer = []
+        self.activations = []
         if (shouldInitialize):
             self.randomize_layers()
         else:
             self.load_layers()
+        for i in range(len(layer_sizes)-1):
+            self.activations.append(Activation_ReLU())
+        self.activations.append(Activation_Softmax())
     
     def randomize_layers(self):
         """initialize each layer with no data
@@ -39,6 +43,14 @@ class Network:
             weights.append(self.layer[i].weights)
             biases.append(self.layer[i].biases)
         fm.store_weights_and_biases(weights, biases)
+
+    def calculate_outputs(self, normalized_tuple):
+        previous_output = list(normalized_tuple)
+        for i in range(len(self.layer)):
+            self.layer[i].forward(previous_output)
+            self.activations[i].forward(self.layer[i].output)
+            previous_output = self.activations[i].output
+        return previous_output[0]
 
     
 
