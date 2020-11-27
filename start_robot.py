@@ -14,15 +14,18 @@ def updateLargest():
     fm.store_highest_data(tuple_readings)
 
 def testThrough():
+    print("Creating learnstraight")
     runner = learn.LearnStraight()
     print("About to run the robot")
     runner.start()
+    runner.train()
+    runner.network.print_layers()
 
 
 
 
 #updateLargest()
-#testThrough()
+testThrough()
 
 
 
